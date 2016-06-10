@@ -6,9 +6,13 @@ class Gtfs:
     MTA_URL = "http://datamine.mta.info/mta_esi.php?key={0}&feed_id={1}"
     STOPS_FILE = "google_transit/stops.txt"
 
-    def __init__(self, api_key, feed_id=1):
+    def __init__(self, api_key, feed_id=1, feed_age = 60):
         self.feed_id = feed_id
         self.api_key = api_key
+        self.feed_age = feed_age
+        self.last_read = time.time()
+        self.get_feed()
+        self.parse_feed()
 
     def get_feed(self):
         url = self.MTA_URL.format(self.api_key, self.feed_id)
@@ -26,8 +30,11 @@ class Gtfs:
 
     def get_updates_at_stop_id(self, stop_id):
         updates = []
-        self.get_feed()
-        self.parse_feed()
+        # only get the feed if the dataset is older than the feed age
+        if time.time() - self.last_read > self.feed_age:
+            self.get_feed()
+            self.parse_feed()
+        
         for entity in self.feed.entity:
             for stop_time_update in entity.trip_update.stop_time_update:
                 if stop_time_update.stop_id == stop_id:
