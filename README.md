@@ -6,5 +6,7 @@ Create a file `api_key` in the root directory.  Add to this file only the MTA su
 
 ## Running
 Run these commands in a terminal from the root directory:
+
 `$ export FLASK_APP='app.py'`
-`$ python -m flask run
+
+`$ python -m flask run`
