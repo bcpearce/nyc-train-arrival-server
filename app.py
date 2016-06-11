@@ -15,12 +15,7 @@ if not os.environ.get('MTA_API_KEY'):
         print "or set the API as environment variable 'MTA_API_KEY'."
         raise SystemExit
 
-gtfs = Gtfs(os.environ['MTA_API_KEY'])
-
-times = gtfs.get_time_to_arrival('236S')
-for eta in times:
-    print "There is a {0} train arriving in {1}:{2:02d}".format(
-        eta[0], int(eta[1]/60), int(eta[1]%60))
+gtfs = Gtfs(os.environ['MTA_API_KEY'], VERBOSE=True)
 
 @app.route('/')
 def root():

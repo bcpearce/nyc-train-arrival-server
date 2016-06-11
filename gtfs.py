@@ -6,17 +6,20 @@ class Gtfs:
     MTA_URL = "http://datamine.mta.info/mta_esi.php?key={0}&feed_id={1}"
     STOPS_FILE = "google_transit/stops.txt"
 
-    def __init__(self, api_key, feed_id=1, feed_age = 60):
+    def __init__(self, api_key, feed_id=1, feed_age = 60, VERBOSE=False):
         self.feed_id = feed_id
         self.api_key = api_key
         self.feed_age = feed_age
-        self.last_read = time.time()
+        self.VERBOSE = VERBOSE
         self.get_feed()
         self.parse_feed()
 
     def get_feed(self):
         url = self.MTA_URL.format(self.api_key, self.feed_id)
         self.response = urllib2.urlopen(url)
+        self.last_read = time.time()
+        if self.VERBOSE:
+            print "updated arrival times"
 
     def parse_feed(self):
         feed = gtfs_realtime_pb2.FeedMessage()
