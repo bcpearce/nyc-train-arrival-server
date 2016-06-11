@@ -24,3 +24,7 @@ def root():
 @app.route('/stop/<stop_id>')
 def get_arrivals(stop_id):
     return jsonify(gtfs.get_time_to_arrival(stop_id))
+
+@app.route('/stop_list')
+def get_stops():
+    return jsonify(gtfs.get_stations_with_gtfs_data())
