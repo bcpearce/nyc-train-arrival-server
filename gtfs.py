@@ -52,7 +52,7 @@ class Gtfs:
         for update in updates:
             eta = update[1] - round(time.time())
             times.append((update[0], eta, update[2]))
-        arrivals = [dict(zip(["route", "time", "stop_id"], u)) for u in updates]
+        arrivals = [dict(zip(["route", "time", "stop_id"], t)) for t in times]
         return arrivals
 
     def get_stations_with_gtfs_data(self):
