@@ -4,6 +4,8 @@ from gtfs import Gtfs
 from flask import Flask, jsonify
 app = Flask(__name__)
 
+feeds_ids = [1, 2, 11]
+
 # set up GTFS data collection
 if not os.environ.get('MTA_API_KEY'):
     try:
@@ -15,7 +17,7 @@ if not os.environ.get('MTA_API_KEY'):
         print "or set the API as environment variable 'MTA_API_KEY'."
         raise SystemExit
 
-gtfs = Gtfs(os.environ['MTA_API_KEY'], VERBOSE=True)
+gtfs_l = [Gtfs(os.environ['MTA_API_KEY'], feed_id = fid, VERBOSE=True) for fid in feeds_ids]
 
 @app.route('/')
 def root():
@@ -23,11 +25,16 @@ def root():
 
 @app.route('/stop/<stop_id>')
 def get_arrivals(stop_id):
-    return jsonify(gtfs.get_time_to_arrival(stop_id))
+    for gtfs in gtfs_l:
+        ret_val = gtfs.get_time_to_arrival(stop_id)
+        if len(ret_val) > 0:
+            break
+    return jsonify(ret_val)
 
 @app.route('/stop_list')
 def get_stops():
-    return jsonify(gtfs.get_stations_with_gtfs_data())
+    s_not_flat = jsonify([gtfs.get_stations_with_gtfs_data() for gtfs in gtfs_l])
+    return [item for sublist in s_not_flat for item in sublist]
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
