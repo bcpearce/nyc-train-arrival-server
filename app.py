@@ -28,3 +28,6 @@ def get_arrivals(stop_id):
 @app.route('/stop_list')
 def get_stops():
     return jsonify(gtfs.get_stations_with_gtfs_data())
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
