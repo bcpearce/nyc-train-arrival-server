@@ -52,7 +52,8 @@ class Gtfs:
         for update in updates:
             eta = update[1] - round(time.time())
             times.append((update[0], eta, update[2]))
-        return times
+        arrivals = [dict(zip(["route", "time", "stop_id"], u)) for u in updates]
+        return arrivals
 
     def get_stations_with_gtfs_data(self):
         stop_id_list = []
@@ -72,7 +73,9 @@ if __name__ == "__main__":
 
     gtfs = Gtfs(os.environ['MTA_API_KEY'])
 
-    times = gtfs.get_time_to_arrival('236S')
+    times = gtfs.get_time_to_arrival('239N')
     for eta in times:
-        print "There is a {0} train arriving in {1}:{2:02d}".format(eta[0], int(eta[1]/60), int(eta[1]%60))
+        print eta
+        print "There is a {0} train arriving in {1}:{2:02d}".format(
+            eta["route"], int(eta["time"]/60), int(eta["time"]%60))
     pdb.set_trace()
