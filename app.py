@@ -1,10 +1,10 @@
-import os
+import os, pdb
 from gtfs import Gtfs
 
 from flask import Flask, jsonify
 app = Flask(__name__)
 
-feeds_ids = [1, 2, 11]
+feeds_ids = [1, 2, 11, 16, 21]
 
 # set up GTFS data collection
 if not os.environ.get('MTA_API_KEY'):
@@ -33,8 +33,8 @@ def get_arrivals(stop_id):
 
 @app.route('/stop_list')
 def get_stops():
-    s_not_flat = jsonify([gtfs.get_stations_with_gtfs_data() for gtfs in gtfs_l])
-    return [item for sublist in s_not_flat for item in sublist]
+    s_not_flat = [gtfs.get_stations_with_gtfs_data() for gtfs in gtfs_l]
+    return jsonify(sorted([item for sublist in s_not_flat for item in sublist]))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
