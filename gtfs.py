@@ -19,7 +19,7 @@ class Gtfs:
         self.response = urllib2.urlopen(url)
         self.last_read = time.time()
         if self.VERBOSE:
-            print "updated arrival times"
+            print "Feed {0}: updated arrival times".format(self.feed_id)
 
     def parse_feed(self):
         feed = gtfs_realtime_pb2.FeedMessage()

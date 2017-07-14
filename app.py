@@ -4,7 +4,8 @@ from gtfs import Gtfs
 from flask import Flask, jsonify
 app = Flask(__name__)
 
-feeds_ids = [1, 2, 11, 16, 21]
+with open("feeds.txt", "r") as f:
+    feeds_ids = [int(x) for x in f.readline().split()]
 
 # set up GTFS data collection
 if not os.environ.get('MTA_API_KEY'):
