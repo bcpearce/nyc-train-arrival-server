@@ -33,6 +33,7 @@ def get_arrivals(stop_id):
     return jsonify(ret_val)
 
 @app.route('/stop_list')
+@app.route('/stops')
 def get_stops():
     s_not_flat = [gtfs.get_stations_with_gtfs_data() for gtfs in gtfs_l]
     return jsonify(sorted([item for sublist in s_not_flat for item in sublist]))
