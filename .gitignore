@@ -1,3 +1,4 @@
 api_key
 *.pyc
 venv/*
+stop_list.json

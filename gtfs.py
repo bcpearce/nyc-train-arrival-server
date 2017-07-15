@@ -11,8 +11,8 @@ class Gtfs:
         self.api_key = api_key
         self.feed_age = feed_age
         self.VERBOSE = VERBOSE
-        self.get_feed()
-        self.parse_feed()
+        self.stops = self.get_stops()
+        self.feed = None
 
     def get_feed(self):
         url = self.MTA_URL.format(self.api_key, self.feed_id)
@@ -26,15 +26,17 @@ class Gtfs:
         feed.ParseFromString(self.response.read())
         self.feed = feed
 
-    def get_stops(data_file = STOPS_FILE):
+    def get_stops(self, data_file = STOPS_FILE):
         with open(data_file) as f:
             reader = csv.DictReader(f)
-            return [x for x in reader]
+            stops = [x for x in reader]
+        keys = [x['parent_station'] for x in stops]
+        return dict(zip(keys, stops))
 
     def get_updates_at_stop_id(self, stop_id):
         updates = []
         # only get the feed if the dataset is older than the feed age
-        if time.time() - self.last_read > self.feed_age:
+        if not self.feed or time.time() - self.last_read > self.feed_age:
             self.get_feed()
             self.parse_feed()
         

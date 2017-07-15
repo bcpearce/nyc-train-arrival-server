@@ -19,6 +19,8 @@ if not os.environ.get('MTA_API_KEY'):
         raise SystemExit
 
 gtfs_l = [Gtfs(os.environ['MTA_API_KEY'], feed_id = fid, VERBOSE=True) for fid in feeds_ids]
+s_not_flat = [gtfs.get_stations_with_gtfs_data() for gtfs in gtfs_l]
+s_flat = sorted([item for sublist in s_not_flat for item in sublist])
 
 @app.route('/')
 def root():
@@ -27,16 +29,18 @@ def root():
 @app.route('/stop/<stop_id>')
 def get_arrivals(stop_id):
     for gtfs in gtfs_l:
-        ret_val = gtfs.get_time_to_arrival(stop_id)
-        if len(ret_val) > 0:
+        arrivals = gtfs.get_time_to_arrival(stop_id)
+        if len(arrivals) > 0:
             break
-    return jsonify(ret_val)
+    stop_info = gtfs.stops[stop_id.rstrip('N').rstrip('S')]
+    #from pprint import pprint
+    #pprint({'stop':stop_info, 'arrivals':arrivals})
+    return jsonify({'stop':stop_info, 'arrivals':arrivals})
 
 @app.route('/stop_list')
 @app.route('/stops')
 def get_stops():
-    s_not_flat = [gtfs.get_stations_with_gtfs_data() for gtfs in gtfs_l]
-    return jsonify(sorted([item for sublist in s_not_flat for item in sublist]))
+    return jsonify({ k:gtfs.stops.get(k) for k in s_flat })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
