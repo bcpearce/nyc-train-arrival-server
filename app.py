@@ -1,8 +1,10 @@
 import os, pdb
 from gtfs import Gtfs
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_file, redirect
+from flask_cors import CORS, cross_origin
 app = Flask(__name__)
+CORS(app)
 
 with open("feeds.txt", "r") as f:
     feeds_ids = [int(x) for x in f.readline().split()]
@@ -41,6 +43,12 @@ def get_arrivals(stop_id):
 @app.route('/stops')
 def get_stops():
     return jsonify({ k:gtfs.stops.get(k) for k in s_flat })
+
+@app.route('/bullet/<bullet_id>')
+def get_bullet(bullet_id, ext="png"):
+    if not bullet_id.endswith((".png", ".gif", ".bmp", ".jpg")):
+        return redirect("/bullet/{0}.{1}".format(bullet_id, ext), code=302)
+    return send_file("img/{0}".format(bullet_id), mimetype="image/{0}".format(ext))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
