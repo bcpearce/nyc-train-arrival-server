@@ -1,4 +1,13 @@
-transitfeed
-gtfs-realtime-bindings
-flask
-gunicorn
+Flask==0.12.2
+Flask-Cors==3.0.3
+Jinja2==2.9.6
+MarkupSafe==1.0
+Werkzeug==0.12.2
+argparse==1.2.1
+click==6.7
+gtfs-realtime-bindings==0.0.5
+itsdangerous==0.24
+protobuf==3.3.0
+six==1.10.0
+transitfeed==1.2.14
+wsgiref==0.1.2
