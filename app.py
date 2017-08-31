@@ -35,6 +35,7 @@ def get_arrivals(stop_id):
         if len(arrivals) > 0:
             break
     stop_info = gtfs.stops[stop_id.rstrip('N').rstrip('S')]
+    stop_info["stop_id"] = stop_id
     #from pprint import pprint
     #pprint({'stop':stop_info, 'arrivals':arrivals})
     return jsonify({'stop':stop_info, 'arrivals':arrivals})
